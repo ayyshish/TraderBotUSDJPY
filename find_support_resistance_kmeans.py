@@ -86,15 +86,17 @@ def mydate(x,pos):
         return ''
 
 
-symbol = "AAPL"
-start = "2023-06-20"
-end = "2023-06-21"
+symbol = "JPY=X"
+start = "2023-06-07"
+end = "2023-07-06"
 est = pytz.timezone('US/Eastern')
 date_format = "%H:%M"
 
 ticker = yf.Ticker(symbol)
-data = ticker.history(period="1d", interval="1m",start=start, end=end, prepost=False, actions=False)
-data = data[:300] #100 1M candles
+data = ticker.history(period="28d", interval="90m",start=start, end=end, prepost=False, actions=False)
+data = data[:100] #100 1M candles
+
+print(data)
 
 data["Time"] = [d.timestamp() for d in data.index]
 data.Time = data.Time.tz_convert(est)
