@@ -40,12 +40,12 @@ def get_optimum_clusters(df):
             optimum_k = i
             break
     
-    
+    '''
     print(df)
     print("Optimum K is " + str(optimum_k + 1))
     print(optimum_k)
     print(len(k_models))
-
+    '''
 
     # Check if optimum_k is within the range of k_models
     if optimum_k < len(k_models):
@@ -61,6 +61,7 @@ def plot_stock_data(data):
     ax1 = plt.subplot2grid((5,1), (0,0), rowspan=4)
     ax2 = plt.subplot2grid((5,1), (4,0), sharex=ax1)
 
+    ax1.set_title("{}".format(instrument))
     ax1.set_facecolor("#131722")
     ax1.xaxis.set_major_formatter(mpticker.FuncFormatter(mydate))
 
@@ -117,11 +118,18 @@ high_clusters = get_optimum_clusters(highs)
 high_centers = high_clusters.cluster_centers_
 high_centers = numpy.sort(high_centers, axis=0)
 
+support= []
+resistance = []
+
 for low in low_centers[:2]:
     ax.axhline(low[0], color='yellow', ls='--')
+    support.append(low[0])
 
 for high in high_centers[-1:]:
     ax.axhline(high[0], color='orange', ls='--')
+    resistance.append(high[0])
 
+print(support)
+print(resistance)
 plt.show()
 
