@@ -4,8 +4,6 @@ import pytz
 
 from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
-import matplotlib.ticker as mpticker
-from mplfinance.original_flavor import candlestick_ohlc
 
 import mplfinance as mpf
 
