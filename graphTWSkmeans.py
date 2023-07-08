@@ -56,7 +56,7 @@ support= []
 resistance = []
 
 support, resistance = SRLines(data, support, resistance)
-support, resistance = SRLines(data[-7:], support, resistance)
+support, resistance = SRLines(data[-7:], support, resistance) #getting last 7 candles (1day 4hr)
 
 data = data[RSIlength:numCan]
 ax = plot_stock_data(data, support, resistance)
