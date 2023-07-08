@@ -68,9 +68,9 @@ def plot_stock_data(data, support, resistance):
     data['Low30'] = 30
     data['High70'] = 70
 
-    ap = [mpf.make_addplot(data['rsi'],color='#ffd300', panel=1, ylabel="RSI", ylim=(0,100)),
-          mpf.make_addplot(data['Low30'], panel=1, color='#e3c565'),
-          mpf.make_addplot(data['High70'], panel=1, color='#d6b85a'),]
+    ap = [mpf.make_addplot(data['rsi'],color='#ffbd2e', panel=1, ylabel="RSI", ylim=(0,100), width=1),
+          mpf.make_addplot(data['Low30'], panel=1, color='#2e70ff', width=1),
+          mpf.make_addplot(data['High70'], panel=1, color='#2e70ff', width=1),]
 
     mpf.plot(data, type='candle', style=style, title='USDJPY', hlines = dict(hlines=lines, linestyle='--', linewidths=1, colors='#0F52Ba'), panel_ratios=(6,2), addplot=ap, returnfig=True)
 
