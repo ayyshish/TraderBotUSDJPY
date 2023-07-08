@@ -46,29 +46,17 @@ data["time"] = [d.timestamp() for d in data.index]
 data.time = data.time.tz_convert(est)
 data = data[["time", "open", "high", "low", "close", "volume", "rsi"]]
 
-#print(data)
+print(data)
 
-lod, hod = 0, 0
-
-lows = pd.DataFrame(data=data, index=data.index, columns=["low"])
-highs = pd.DataFrame(data=data, index=data.index, columns=["high"])
-
-low_clusters = get_optimum_clusters(lows)
-low_centers = low_clusters.cluster_centers_
-low_centers = numpy.sort(low_centers, axis=0)
-
-high_clusters = get_optimum_clusters(highs)
-high_centers = high_clusters.cluster_centers_
-high_centers = numpy.sort(high_centers, axis=0)
+#Finding supp resistance lines for diff timeframes
+#At 4hr candles -> 1day = 7candles
+#lod, hod = 0, 0
 
 support= []
 resistance = []
 
-for low in low_centers[:2]:
-    support.append(low[0])
-
-for high in high_centers[-1:]:
-    resistance.append(high[0])
+support, resistance = SRLines(data, support, resistance)
+support, resistance = SRLines(data[-7:], support, resistance)
 
 data = data[RSIlength:numCan]
 ax = plot_stock_data(data, support, resistance)
