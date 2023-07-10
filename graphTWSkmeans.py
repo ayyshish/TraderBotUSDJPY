@@ -19,7 +19,7 @@ ib.connect('127.0.0.1', 7496, clientId=1)
 instrument = 'USDJPY'
 contract = Forex(instrument)
 bars = ib.reqHistoricalData(
-    contract, endDateTime='', durationStr='30 D',
+    contract, endDateTime='', durationStr='32 D', #2 days more than needed to accomodate RSI
     barSizeSetting='4 hours', whatToShow='MIDPOINT', useRTH=True)
 est = pytz.timezone('US/Eastern')
 date_format = "%H:%M"
@@ -34,7 +34,7 @@ for i in range(numCan):
         data.at[i,'volume'] = 0
 
 #RSI Append
-RSIlength = 14
+RSIlength = 14 #candles (periods)
 data["rsi"] = pta.rsi(data['close'], length = RSIlength)
 data["rsi"] = data["rsi"].fillna(0)
 
