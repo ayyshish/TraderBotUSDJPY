@@ -11,7 +11,7 @@ import pandas as pd
 import numpy
 
 import pandas_ta as pta
-from defs import *
+from Extra_Reference_Files.defs import *
 
 ib = IB()
 ib.connect('127.0.0.1', 7496, clientId=1)
@@ -64,4 +64,3 @@ ax = plot_stock_data(data, support, resistance)
 print(support)
 print(resistance)
 plt.show()
-

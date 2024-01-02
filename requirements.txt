@@ -1,0 +1,8 @@
+numpy
+pandas
+datetime
+pytz
+mplfinance
+matplotlib
+sklearn
+yfinance
