@@ -11,7 +11,7 @@ import pandas as pd
 import numpy
 
 import pandas_ta as pta
-from Extra_Reference_Files.defs import *
+from defs import *
 
 ib = IB()
 ib.connect('127.0.0.1', 7496, clientId=1)
