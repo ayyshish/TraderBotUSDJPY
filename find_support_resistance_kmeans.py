@@ -87,8 +87,8 @@ def mydate(x,pos):
 
 
 symbol = "JPY=X"
-start = "2023-06-07"
-end = "2023-07-06"
+start = "2023-12-15"
+end = "2024-01-01"
 est = pytz.timezone('US/Eastern')
 date_format = "%H:%M"
 
