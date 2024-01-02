@@ -11,14 +11,6 @@ import mplfinance as mpf
 import pandas as pd
 import numpy
 
-API_KEY = "1f7b7538ccf25a16531d1289e9685471-6689f6c28c41334cf29e883820550606"
-ACCOUNT_ID = "101-003-26247776-001"
-OANDA_URL = 'https://api-fxpractice.oanda.com/v3'
-
-SECURE_HEADER = {
-    'Authorization': 'Bearer 1f7b7538ccf25a16531d1289e9685471-6689f6c28c41334cf29e883820550606'
-}
-
 def get_optimum_clusters(df):
     '''
 
