@@ -99,7 +99,7 @@ while True:
     current_data = calculate_rsi(current_data)
 
     # every 4 hours, recalculate support and resistance and fib lines
-    if counter>14400:
+    if counter>240:
         counter = 0
         _, support, resistance = calculate_support_resistance_withdata(current_data, instrument, duration, bar_size)
         fib_levels, max_price, min_price, ascending = fib_lines(current_data)
