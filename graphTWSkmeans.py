@@ -46,7 +46,7 @@ data["time"] = [d.timestamp() for d in data.index]
 data.time = data.time.tz_convert(est)
 data = data[["time", "open", "high", "low", "close", "volume", "rsi"]]
 
-print(data)
+#print(data)
 
 #Finding supp resistance lines for diff timeframes
 #At 4hr candles -> 1day = 7candles
@@ -62,6 +62,6 @@ data = data[RSIlength:numCan]
 fiblevels, shadeArray = fibLines(data)
 ax = plot_stock_data(data, support, resistance, fiblevels, shadeArray)
 
-print(support)
-print(resistance)
+#print(support)
+#print(resistance)
 plt.show()

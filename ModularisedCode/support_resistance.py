@@ -16,6 +16,7 @@ def calculate_support_resistance(instrument, duration, bar_size, show_type='MIDP
     ib.connect('127.0.0.1', 7496, clientId=1)
 
     contract = Forex(instrument)
+    
     bars = ib.reqHistoricalData(
         contract, endDateTime='', durationStr=duration,
         barSizeSetting=bar_size, whatToShow=show_type, useRTH=True)
@@ -23,6 +24,15 @@ def calculate_support_resistance(instrument, duration, bar_size, show_type='MIDP
     data = pd.DataFrame(bars)
 
     support, resistance = SRLines(data, [], [])
+    return data, support, resistance
+
+def calculate_support_resistance_withdata(current_data, instrument, duration, bar_size, show_type='MIDPOINT'):
+  
+    data = current_data
+
+    support, resistance = SRLines(data, [], [])
+    print("Support levels:", support)
+    print("Resistance levels:", resistance)
     return data, support, resistance
 
 # if __name__ == "__main__":

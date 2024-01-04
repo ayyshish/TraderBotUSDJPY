@@ -3,7 +3,7 @@ from ib_insync import *
 from rsi_calculation import calculate_rsi
 from fib_retracement import fib_lines
 import pandas as pd
-from support_resistance import calculate_support_resistance
+from support_resistance import calculate_support_resistance_withdata
 
 # Configuration
 instrument = 'USDJPY'
@@ -21,12 +21,11 @@ def get_latest_data():
     Retrieve the latest data for the specified instrument.
     """
     contract = Forex(instrument)
-    bars = ib.reqHistoricalData(
-        contract, endDateTime='', durationStr='1800 S',
-        barSizeSetting='10 secs', whatToShow='MIDPOINT', useRTH=True)
+    bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='1800 S', barSizeSetting='10 secs', whatToShow='MIDPOINT', useRTH=True)
+    
     return pd.DataFrame(bars)
 
-def should_invest(data, support, resistance, fib_levels):
+def should_invest(data, support, resistance, fib_levels, ascending):
     """
     Determine whether to invest based on support, resistance, Fibonacci levels, and RSI.
 
@@ -38,20 +37,34 @@ def should_invest(data, support, resistance, fib_levels):
     """
     current_price = data['close'].iloc[-1]
     rsi = data['rsi'].iloc[-1]
+    sell = False
+    buy = False
 
-    # Check RSI
-    if not (min_rsi_allowance <= rsi <= max_rsi_allowance):
+    # Step 1: Check RSI
+    if not (min_rsi_allowance <= rsi <= max_rsi_allowance): #   <- idt this is correct lol
         return False
+    
+    # Step 2: Check if price is near support or resistance
+    for sup_level in support:
+        if abs(current_price - sup_level) / sup_level <= 0.005:
 
-    # Check if resistance is near Fibonacci level
+            # Check if support is near Fibonacci level and overall trend is upwards
+            for fib_level in fib_levels.values():
+                if (abs(sup_level - fib_level) / fib_level <= 0.005 and ascending):  # Within 0.5% of a Fibonacci level
+                    buy = True
+    
     for res_level in resistance:
-        for fib_level in fib_levels.values():
-            if abs(res_level - fib_level) / fib_level <= 0.01:  # Within 1% of a Fibonacci level
-                return True
+        if abs(current_price - res_level) / res_level <= 0.005:
+
+            # Check if resistance is near Fibonacci level
+            for fib_level in fib_levels.values():
+                if (abs(res_level - fib_level) / fib_level <= 0.005 and not ascending):  # Within 0.5% of a Fibonacci level
+                    sell = True
+
 
     return False
 
-def calculate_stop_loss_take_profit(fib_levels, current_price):
+def calculate_stop_loss_take_profit(fib_levels):
     """
     Calculate the stop loss and take profit levels based on Fibonacci retracement.
 
@@ -60,23 +73,56 @@ def calculate_stop_loss_take_profit(fib_levels, current_price):
     :return: Tuple containing stop loss and take profit levels.
     """
     #TODO: THESE ARE TEMPLATES, NEED TO PROPERLY DO
-    stop_loss = current_price - 0.01
-    take_profit = current_price + 0.01
+
+    # Logic: Buy when price between 0.5 and 0.618 levels
+    # Overall Downwards trend (Sell): take profit at 0.382 (level5), stop loss at 0.786 (level2)
+    # Overall Upwards trend (Buy): take profit at 0.786 (level5) stop loss at 0.382 (level2)
+
+    stop_loss = fib_levels['level2']
+    take_profit = fib_levels['level5']
     return stop_loss, take_profit
+    
+
+counter = 0
+
+current_data = get_latest_data()
+current_data = calculate_rsi(current_data)
+
+_, support, resistance = calculate_support_resistance_withdata(current_data, instrument, duration, bar_size)
+fib_levels, max_price, min_price, ascending = fib_lines(current_data)
+print (fib_levels)
 
 while True:
+
+    # call for data every 60s
     current_data = get_latest_data()
     current_data = calculate_rsi(current_data)
 
-    #TODO: change them to not run every minute but every 4h and 30 min / when low high changes respectively
-    _, support, resistance = calculate_support_resistance(instrument, duration, bar_size)
-    fib_levels, max_price, min_price = fib_lines(current_data)
+    # every 4 hours, recalculate support and resistance and fib lines
+    if counter>14400:
+        counter = 0
+        _, support, resistance = calculate_support_resistance_withdata(current_data, instrument, duration, bar_size)
+        fib_levels, max_price, min_price, ascending = fib_lines(current_data)
 
-    if should_invest(current_data, support, resistance, fib_levels):
-        stop_loss, take_profit = calculate_stop_loss_take_profit(fib_levels, current_data['close'].iloc[-1])
-        print(f"Investing with stop loss at {stop_loss} and take profit at {take_profit}")
-        # Implement investment logic here
+    # check if the newly obtained close price is greater than max or smaller than min. if so, we dont place any trades.
+    elif (current_data['close'].iloc[-1] > max_price or current_data['close'].iloc[-1] < min_price):
+        counter = 14444
+        # allow time for price to correct itself, then recalculate support and resistance and fib lines
+        time.sleep(120)
+
     else:
-        print("Not investing as requirements not met.")
+
+        if should_invest(current_data, support, resistance, fib_levels, ascending):
+
+            stop_loss, take_profit = calculate_stop_loss_take_profit(fib_levels)
+            print(f"Investing with stop loss at {stop_loss} and take profit at {take_profit}")
+
+                # Implement investment logic here
+                # call to bot to place trade
+                
+        else:
+            print("Not investing as requirements not met.")
         
-    time.sleep(60) # Repeats every 60s
+        time.sleep(60) # Repeats every 60s
+    counter += 1
+
