@@ -38,9 +38,9 @@ def SRLines(data, support, resistance):
     high_centers = np.sort(high_centers, axis=0)
 
     for low in low_centers[:2]:
-        support.append(low[0])
+        support.append(round(low[0], 4))
 
     for high in high_centers[-1:]:
-        resistance.append(high[0])
+        resistance.append(round(high[0], 4))
     
     return support, resistance

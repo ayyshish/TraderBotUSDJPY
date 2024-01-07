@@ -88,7 +88,7 @@ counter = 0
 current_data = get_latest_data()
 current_data = calculate_rsi(current_data)
 
-_, support, resistance = calculate_support_resistance_withdata(current_data, instrument, duration, bar_size)
+_, support, resistance = calculate_support_resistance_withdata(current_data)
 fib_levels, max_price, min_price, ascending = fib_lines(current_data)
 print (fib_levels)
 
