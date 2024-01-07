@@ -19,7 +19,7 @@ ib.connect('127.0.0.1', 7496, clientId=1)
 instrument = 'USDJPY'
 contract = Forex(instrument)
 bars = ib.reqHistoricalData(
-    contract, endDateTime='', durationStr='32 D', #2 days more than needed to accomodate RSI
+    contract, endDateTime='20050601 00:00:00 US/Eastern', durationStr='30 D', #2 days more than needed to accomodate RSI
     barSizeSetting='4 hours', whatToShow='MIDPOINT', useRTH=True)
 est = pytz.timezone('US/Eastern')
 date_format = "%H:%M"
@@ -46,7 +46,7 @@ data["time"] = [d.timestamp() for d in data.index]
 data.time = data.time.tz_convert(est)
 data = data[["time", "open", "high", "low", "close", "volume", "rsi"]]
 
-#print(data)
+print(data)
 
 #Finding supp resistance lines for diff timeframes
 #At 4hr candles -> 1day = 7candles
@@ -60,8 +60,8 @@ support, resistance = SRLines(data[-7:], support, resistance) #getting last 7 ca
 
 data = data[RSIlength:numCan]
 fiblevels, shadeArray = fibLines(data)
-ax = plot_stock_data(data, support, resistance, fiblevels, shadeArray)
+#ax = plot_stock_data(data, support, resistance, fiblevels, shadeArray)
 
 #print(support)
 #print(resistance)
-plt.show()
+#plt.show()

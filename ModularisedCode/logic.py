@@ -106,7 +106,7 @@ while True:
 
     # check if the newly obtained close price is greater than max or smaller than min. if so, we dont place any trades.
     elif (current_data['close'].iloc[-1] > max_price or current_data['close'].iloc[-1] < min_price):
-        counter = 14444
+        counter = 244
         # allow time for price to correct itself, then recalculate support and resistance and fib lines
         time.sleep(120)
 
