@@ -2,6 +2,7 @@ from backtesting import Backtest, Strategy
 from rsi_calculation import calculate_rsi
 from support_resistance import calculate_support_resistance_withdata
 from fib_retracement import fib_lines
+from ichimoku_cloud import calc_ichimoku_cloud_signal
 
 import pandas as pd
 import numpy as np
@@ -68,9 +69,6 @@ while counter < len(historical_data):
 
 historical_data.to_pickle("historical_data_with_fiblines.pkl")
 """
-
-historical_data = pd.read_pickle("historical_data_with_fiblines.pkl")
-
 """
 while counter < len(historical_data):
     max_price = max(historical_data['close'][start:counter])
@@ -91,6 +89,8 @@ while counter < len(historical_data):
 
 # Fill NaN values in 'fib_levels' column with an empty list
 # historical_data['fib_levels'] = historical_data['fib_levels'].apply(lambda x: [] if pd.isna(x) else x)
+
+"""
 
 """
 #create a new column 'trade' with 0 as the deafulat value
@@ -135,3 +135,35 @@ while counter < len(historical_data):
 
 
 print(historical_data)
+"""
+
+historical_data = pd.read_pickle("historical_data_excel.pkl")
+ichimoku_cloud_backtest = calc_ichimoku_cloud_signal(historical_data)
+
+#drop volume column
+ichimoku_cloud_backtest = ichimoku_cloud_backtest.drop(columns=['volume'])
+
+#change column names
+ichimoku_cloud_backtest = ichimoku_cloud_backtest.rename(columns={'date': 'Date', 'open': 'Open', 'high': 'High', 'low': 'Low', 'close': 'Close', "signal": 'Signal'})
+
+class IchimokuCloud(Strategy):
+
+    def init(self):
+        pass
+
+    def next(self):
+        current_signal = self.data.Signal[-1]
+
+        if current_signal == -1:
+            if not self.position:
+                self.buy()
+        elif current_signal == 1:
+            if self.position:
+                self.position.close()
+
+bt = Backtest(ichimoku_cloud_backtest, IchimokuCloud, cash=10000, commission=0.002)
+
+stats = bt.run()
+print(stats)
+bt.plot()
+
