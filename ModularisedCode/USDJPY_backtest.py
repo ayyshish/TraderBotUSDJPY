@@ -39,6 +39,8 @@ def calc_fib_lines(data):
 
     return fib_levels
 
+# Dont Delete 
+
 """
 historical_data = pd.read_pickle("historical_data_excel.pkl")
 historical_data = historical_data[["date", "open", "high", "low", "close", "volume"]]
@@ -137,6 +139,8 @@ while counter < len(historical_data):
 print(historical_data)
 """
 
+# Ichimoku Cloud Backtest
+
 historical_data = pd.read_pickle("historical_data_excel.pkl")
 ichimoku_cloud_backtest = calc_ichimoku_cloud_signal(historical_data)
 
@@ -154,10 +158,10 @@ class IchimokuCloud(Strategy):
     def next(self):
         current_signal = self.data.Signal[-1]
 
-        if current_signal == -1:
+        if current_signal == 1:
             if not self.position:
                 self.buy()
-        elif current_signal == 1:
+        elif current_signal == -1:
             if self.position:
                 self.position.close()
 
