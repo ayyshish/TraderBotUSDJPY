@@ -3,8 +3,8 @@ def fib_lines(data):
     max_price_index = data['close'].idxmax()
     min_price_index = data['close'].idxmin()
 
-    max_price_datetime = data.iloc[max_price_index, 0]
-    min_price_datetime = data.iloc[min_price_index, 0]
+    max_price_datetime = data.iloc[max_price_index, data.columns.get_loc('date')]
+    min_price_datetime = data.iloc[min_price_index, data.columns.get_loc('date')]
 
     ascending = max_price_datetime > min_price_datetime
 
