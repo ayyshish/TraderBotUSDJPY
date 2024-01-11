@@ -21,7 +21,7 @@ def get_latest_data():
     Retrieve the latest data for the specified instrument.
     """
     contract = Forex(instrument)
-    bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='1800 S', barSizeSetting='10 secs', whatToShow='MIDPOINT', useRTH=True)
+    bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 S', barSizeSetting='1 secs', whatToShow='MIDPOINT', useRTH=True)
     
     return pd.DataFrame(bars)
 
@@ -125,4 +125,3 @@ while True:
         
         time.sleep(60) # Repeats every 60s
     counter += 1
-
